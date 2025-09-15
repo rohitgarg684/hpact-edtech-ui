@@ -1,0 +1,57 @@
+from fastapi import APIRouter
+from fastapi import Request
+from pydantic import BaseModel, Field
+
+from embed_tag.chat_rag_enrichment_manager import ChatRagEnrichmentManager
+from embed_tag.openai_service import OpenAIService
+from applicationdb.application_db_repository import ApplicationDBRepository
+from login.user_session_auth import UserSessionAuth
+from qdrant_client_service import QdrantService
+
+
+class ChatRequest(BaseModel):
+    prompt: str = Field(..., min_length=1, max_length=4000, description="Prompt for AI")
+
+
+class ChatAPI:
+    """
+    Encapsulates chat endpoints, storing prompt-response history per session and username.
+    """
+
+    def __init__(self):
+        self.router = APIRouter()
+        self.app_repo = ApplicationDBRepository.get_instance()
+        self.ai_agent = OpenAIService.get_instance()
+        self.qdrant_service = QdrantService.get_instance()
+        self.chat_enrichment_service = ChatRagEnrichmentManager()
+        self._register_routes()
+        self.user_session = UserSessionAuth()
+
+    def _register_routes(self):
+        @self.router.post("/chat")
+        def chat(request: Request, chat_request: ChatRequest):
+            # 1.  Retrieve previous context
+            user = self.user_session.get_current_user(request)
+            chat_history = self.chat_enrichment_service.get_chat_history(session_id=user.session_id,
+                                                                         username=user.username)
+            # 2. Build full prompt with context
+            full_prompt = f"{chat_history.get_full_content()}\nUser: {chat_request.prompt}"
+
+            # 3. Query Qdrant
+            retrieved_docs = self.qdrant_service.query(full_prompt)
+
+            # 4. Get response from OpenAI
+            response_text = self.ai_agent.get_chat_response(chat_request.prompt, retrieved_docs)
+
+            # 5. Store prompt & AI response in DB as KV pair
+            self.app_repo.store_prompt_response(user.session_id, user.username, chat_request.prompt, response_text)
+
+            return {"response": response_text}
+
+        @self.router.post("/save-chat")
+        def save_chat(request: Request):
+            user = self.user_session.get_current_content_creator_user(request)
+            session_embedding_response = self.chat_enrichment_service.save_session_embeddings(user.session_id,
+                                                                                              user.username)
+
+            return session_embedding_response.get_friendly_response(user.session_id)

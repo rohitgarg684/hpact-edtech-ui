@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(210, 20%, 98%);
+  --foreground: hsl(210, 40%, 8%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(210, 40%, 8%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(210, 40%, 8%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(210, 40%, 96%);
+  --secondary-foreground: hsl(210, 40%, 8%);
+  --muted: hsl(210, 40%, 96%);
+  --muted-foreground: hsl(210, 40%, 45%);
+  --accent: hsl(210, 40%, 96%);
+  --accent-foreground: hsl(210, 40%, 8%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(210, 40%, 82%);
+  --input: hsl(210, 40%, 96%);
+  --ring: hsl(217, 91%, 60%);
+  --chart-1: hsl(217, 91%, 60%);
+  --chart-2: hsl(159, 100%, 36%);
+  --chart-3: hsl(42, 93%, 56%);
+  --chart-4: hsl(147, 78%, 42%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(0, 0%, 100%);
+  --sidebar-foreground: hsl(210, 40%, 8%);
+  --sidebar-primary: hsl(217, 91%, 60%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: hsl(210, 40%, 96%);
+  --sidebar-accent-foreground: hsl(210, 40%, 8%);
+  --sidebar-border: hsl(210, 40%, 82%);
+  --sidebar-ring: hsl(217, 91%, 60%);
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: hsl(210, 40%, 3%);
+  --foreground: hsl(0, 0%, 95%);
+  --card: hsl(210, 40%, 6%);
+  --card-foreground: hsl(0, 0%, 95%);
+  --popover: hsl(210, 40%, 6%);
+  --popover-foreground: hsl(0, 0%, 95%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(210, 40%, 11%);
+  --secondary-foreground: hsl(0, 0%, 95%);
+  --muted: hsl(210, 40%, 11%);
+  --muted-foreground: hsl(210, 40%, 65%);
+  --accent: hsl(210, 40%, 11%);
+  --accent-foreground: hsl(0, 0%, 95%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(210, 40%, 18%);
+  --input: hsl(210, 40%, 11%);
+  --ring: hsl(217, 91%, 60%);
+  --sidebar: hsl(210, 40%, 6%);
+  --sidebar-foreground: hsl(0, 0%, 95%);
+  --sidebar-primary: hsl(217, 91%, 60%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: hsl(210, 40%, 11%);
+  --sidebar-accent-foreground: hsl(0, 0%, 95%);
+  --sidebar-border: hsl(210, 40%, 18%);
+  --sidebar-ring: hsl(217, 91%, 60%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Custom form styles matching the design */
+.input-group {
+  position: relative;
+}
+
+.floating-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: hsl(var(--card));
+  padding: 0 4px;
+  color: hsl(var(--muted-foreground));
+  transition: all 0.2s ease;
+  pointer-events: none;
+  font-size: 14px;
+}
+
+.form-input:focus + .floating-label,
+.form-input:not(:placeholder-shown) + .floating-label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: hsl(var(--primary));
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid hsl(var(--border));
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+}
+
+.form-input.error {
+  border-color: hsl(var(--destructive));
+}
+
+.form-input.success {
+  border-color: hsl(142, 76%, 36%);
+}
+
+.password-strength {
+  height: 4px;
+  background: hsl(var(--muted));
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.password-strength-bar {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.strength-weak { 
+  background: hsl(var(--destructive)); 
+  width: 33%; 
+}
+
+.strength-medium { 
+  background: hsl(43, 96%, 56%); 
+  width: 66%; 
+}
+
+.strength-strong { 
+  background: hsl(142, 76%, 36%); 
+  width: 100%; 
+}
