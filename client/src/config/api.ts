@@ -20,18 +20,18 @@ export interface ApiConfig {
 
 // Environment-specific configurations
 const configs: Record<string, ApiConfig> = {
-  // Development server (proxied to external backend)
-  development: {
-    baseUrl: "", // Same origin via proxy
-    timeout: 30000,
-    endpoints: {
-      register: "/api/register",
-      login: "/api/login", 
-      logout: "/api/logout",
-      user: "/api/user",
-      chat: "/api/chat",
+    // Development server (direct connection to external backend)
+    development: {
+        baseUrl: "http://0.0.0.0:8000", // Direct connection to external backend
+        timeout: 30000,
+        endpoints: {
+            register: "/register",
+            login: "/login",
+            logout: "/logout",
+            user: "/user",
+            chat: "/chat",
+        },
     },
-  },
 
   // Production server
   production: {

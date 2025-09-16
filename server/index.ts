@@ -3,32 +3,9 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
-// Backend API target URL - Use 0.0.0.0 for Replit compatibility
-const BACKEND_TARGET_URL = process.env.BACKEND_URL || 'http://0.0.0.0:8000';
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// Proxy API requests to external backend in development
-if (process.env.NODE_ENV === 'development') {
-  // Add logging middleware before proxy
-  app.use('/api/*', (req, res, next) => {
-    const originalUrl = req.originalUrl || req.url;
-    const rewrittenPath = originalUrl.replace(/^\/api/, '');
-    const targetUrl = `${BACKEND_TARGET_URL}${rewrittenPath}`;
-    log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
-    next();
-  });
-
-  app.use('/api', createProxyMiddleware({
-    target: BACKEND_TARGET_URL,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/api': '', // Remove /api prefix when forwarding
-    },
-  }));
-}
 
 app.use((req, res, next) => {
   const start = Date.now();
