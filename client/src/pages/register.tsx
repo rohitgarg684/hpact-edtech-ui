@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Form,
   FormControl,
@@ -21,11 +20,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const userTypes = [
-  { value: "individual", label: "Individual" },
-  { value: "business", label: "Business" },
-  { value: "organization", label: "Organization" },
-];
 
 export default function Register() {
   const { toast } = useToast();
@@ -48,7 +42,6 @@ export default function Register() {
       last_name: "",
       password: "",
       confirm_password: "",
-      user_type: "individual",
     },
   });
 
@@ -193,34 +186,6 @@ export default function Register() {
                   )}
                 />
 
-                {/* User Type Field */}
-                <FormField
-                  control={form.control}
-                  name="user_type"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-1">
-                        <User size={14} />
-                        User Type
-                      </FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger data-testid="select-user-type">
-                            <SelectValue placeholder="Select user type" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {userTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage data-testid="text-user-type-error" />
-                    </FormItem>
-                  )}
-                />
 
                 {/* Password Field */}
                 <FormField

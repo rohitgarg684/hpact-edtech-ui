@@ -21,7 +21,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const userData = validationResult.data;
+      const userData = {
+        ...validationResult.data,
+        user_type: "individual"
+      };
 
       // Check if user already exists
       const existingUser = await storage.getUserByUsername(userData.username);

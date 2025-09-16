@@ -26,21 +26,18 @@ export const loginAttempts = pgTable("login_attempts", {
   attempted_at: timestamp("attempted_at").defaultNow(),
 });
 
-// Registration schema with validation
-export const registerUserSchema = createInsertSchema(users)
-  .omit({ id: true, created_at: true })
-  .extend({
-    password: z.string()
-      .min(8, "Password must be at least 8 characters long")
-      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
-      .regex(/\d/, "Password must contain at least one digit")
-      .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
-    username: z.string().email("Please enter a valid email address"),
-    first_name: z.string().min(1, "First name is required").max(50, "First name must be 50 characters or less"),
-    last_name: z.string().min(1, "Last name is required").max(50, "Last name must be 50 characters or less"),
-    user_type: z.string().min(1, "User type is required"),
-  });
+// Registration schema with validation - standalone schema not tied to DB table
+export const registerUserSchema = z.object({
+  username: z.string().email("Please enter a valid email address"),
+  first_name: z.string().min(1, "First name is required").max(50, "First name must be 50 characters or less"),
+  last_name: z.string().min(1, "Last name is required").max(50, "Last name must be 50 characters or less"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/\d/, "Password must contain at least one digit")
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, "Password must contain at least one special character"),
+});
 
 // Login schema
 export const loginUserSchema = z.object({
