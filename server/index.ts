@@ -9,33 +9,19 @@ app.use(express.urlencoded({ extended: false }));
 
 // Proxy API requests to external backend in development
 if (process.env.NODE_ENV === 'development') {
+  // Add logging middleware before proxy
+  app.use('/api/*', (req, res, next) => {
+    const originalUrl = req.url;
+    const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
+    log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
+    next();
+  });
+
   app.use('/api', createProxyMiddleware({
     target: 'http://localhost:8000',
     changeOrigin: true,
     pathRewrite: {
       '^/api': '', // Remove /api prefix when forwarding
-    },
-    onProxyReq: (proxyReq: any, req: any) => {
-      const originalUrl = req.url;
-      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
-      log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
-    },
-    onProxyRes: (proxyRes: any, req: any) => {
-      const originalUrl = req.url;
-      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
-      log(`✅ PROXY RESPONSE: ${proxyRes.statusCode} from ${targetUrl}`);
-    },
-    onError: (err: any, req: any, res: any) => {
-      const originalUrl = req.url;
-      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
-      log(`❌ PROXY ERROR: ${err.message} for ${targetUrl}`);
-      if (!res.headersSent) {
-        res.status(502).json({ 
-          error: 'Backend service unavailable', 
-          target: targetUrl,
-          originalUrl: originalUrl 
-        });
-      }
     },
   }));
 }
