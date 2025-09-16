@@ -10,13 +10,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
   // Allow all origins for local development
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control');
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '1728000');
   
   // Handle all preflight requests permissively
   if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
+    res.status(200).end();
     return;
   }
   
@@ -74,7 +75,7 @@ app.use((req, res, next) => {
   }
 
   // Use localhost for local development instead of 0.0.0.0
-  const port = parseInt(process.env.PORT || '5000', 10);
+  const port = parseInt(process.env.PORT || '3000', 10);
   server.listen(port, "localhost", () => {
     log(`serving on http://localhost:${port}`);
   });
