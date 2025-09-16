@@ -23,7 +23,7 @@ export interface ApiConfig {
 const configs: Record<string, ApiConfig> = {
   // Development server (local development)
   development: {
-    baseUrl: "", // Same origin
+    baseUrl: "http://0.0.0.0:8000", // Backend development server
     timeout: 30000,
     endpoints: {
       register: "/register",
