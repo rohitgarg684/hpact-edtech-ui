@@ -78,6 +78,31 @@ const configs: Record<string, ApiConfig> = {
   },
 };
 
+// Get base URL from environment variables with fallbacks
+const getBaseUrl = (): string => {
+  // 1. Check for explicit base URL override
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  
+  // 2. Check for environment-specific config
+  const apiEnv = import.meta.env.VITE_API_ENV;
+  if (apiEnv && configs[apiEnv]) {
+    return configs[apiEnv].baseUrl;
+  }
+  
+  // 3. Use NODE_ENV to determine default
+  const nodeEnv = import.meta.env.NODE_ENV || 'development';
+  
+  switch (nodeEnv) {
+    case 'production':
+      return configs.production.baseUrl;
+    case 'development':
+    default:
+      return configs.local.baseUrl; // Default to local (same-origin)
+  }
+};
+
 // Get the current environment from environment variables or default to 'local'
 const getCurrentEnvironment = (): string => {
   // Check for explicit API environment override
@@ -98,18 +123,27 @@ const getCurrentEnvironment = (): string => {
   }
 };
 
-// Get the current configuration
+// Get the current configuration with base URL override support
 export const getApiConfig = (): ApiConfig => {
   const environment = getCurrentEnvironment();
   const config = configs[environment];
   
   if (!config) {
     console.warn(`API environment '${environment}' not found, falling back to 'local'`);
-    return configs.local;
+    return {
+      ...configs.local,
+      baseUrl: getBaseUrl()
+    };
   }
   
-  console.log(`Using API configuration: ${environment} (${config.baseUrl || 'same-origin'})`);
-  return config;
+  // Override base URL if explicitly provided
+  const finalConfig = {
+    ...config,
+    baseUrl: getBaseUrl()
+  };
+  
+  console.log(`Using API configuration: ${environment} (${finalConfig.baseUrl || 'same-origin'})`);
+  return finalConfig;
 };
 
 // Helper to get full URL for an endpoint
