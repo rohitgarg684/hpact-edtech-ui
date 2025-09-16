@@ -3,6 +3,9 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
+// Backend API target URL
+const BACKEND_TARGET_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -13,13 +16,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use('/api/*', (req, res, next) => {
     const originalUrl = req.originalUrl || req.url;
     const rewrittenPath = originalUrl.replace(/^\/api/, '');
-    const targetUrl = `http://localhost:8000${rewrittenPath}`;
+    const targetUrl = `${BACKEND_TARGET_URL}${rewrittenPath}`;
     log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
     next();
   });
 
   app.use('/api', createProxyMiddleware({
-    target: 'http://localhost:8000',
+    target: BACKEND_TARGET_URL,
     changeOrigin: true,
     pathRewrite: {
       '^/api': '', // Remove /api prefix when forwarding
