@@ -21,8 +21,8 @@ export interface ApiConfig {
 
 // Environment-specific configurations
 const configs: Record<string, ApiConfig> = {
-  // Local Express server (current setup)
-  local: {
+  // Development server (local development)
+  development: {
     baseUrl: "", // Same origin
     timeout: 30000,
     endpoints: {
@@ -35,23 +35,9 @@ const configs: Record<string, ApiConfig> = {
     },
   },
 
-  // Python FastAPI server (your backend)
-  fastapi: {
-    baseUrl: "http://localhost:8000", // Change this to your FastAPI server URL
-    timeout: 30000,
-    endpoints: {
-      register: "/register",
-      login: "/login",
-      logout: "/logout", 
-      user: "/user",
-      chat: "/chat",
-      saveChat: "/save-chat",
-    },
-  },
-
-  // Production FastAPI server
+  // Production server
   production: {
-    baseUrl: "https://your-fastapi-domain.com", // Change this to your production URL
+    baseUrl: "https://your-api-domain.com", // Change this to your production URL
     timeout: 30000,
     endpoints: {
       register: "/register",
@@ -59,20 +45,6 @@ const configs: Record<string, ApiConfig> = {
       logout: "/logout",
       user: "/user", 
       chat: "/chat",
-      saveChat: "/save-chat",
-    },
-  },
-
-  // Development FastAPI server
-  development: {
-    baseUrl: "http://localhost:8000", // Or your dev server URL
-    timeout: 30000,
-    endpoints: {
-      register: "/register",
-      login: "/login",
-      logout: "/logout",
-      user: "/user",
-      chat: "/chat", 
       saveChat: "/save-chat",
     },
   },
@@ -99,7 +71,7 @@ const getBaseUrl = (): string => {
       return configs.production.baseUrl;
     case 'development':
     default:
-      return configs.local.baseUrl; // Default to local (same-origin)
+      return configs.development.baseUrl; // Default to development (same-origin)
   }
 };
 
@@ -117,9 +89,8 @@ const getCurrentEnvironment = (): string => {
     case 'production':
       return 'production';
     case 'development':
-      return 'local'; // Default to local Express for development
     default:
-      return 'local';
+      return 'development';
   }
 };
 
@@ -129,9 +100,9 @@ export const getApiConfig = (): ApiConfig => {
   const config = configs[environment];
   
   if (!config) {
-    console.warn(`API environment '${environment}' not found, falling back to 'local'`);
+    console.warn(`API environment '${environment}' not found, falling back to 'development'`);
     return {
-      ...configs.local,
+      ...configs.development,
       baseUrl: getBaseUrl()
     };
   }

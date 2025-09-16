@@ -15,10 +15,8 @@ export const BASE_URL_CONFIGS = {
   
   // Option 3: Quick presets for common scenarios
   PRESETS: {
-    localExpress: "",                           // Same origin (current Express server)
-    localFastAPI: "http://localhost:8000",     // Local FastAPI server
-    staging: "https://your-staging-api.com",   // Staging server
-    production: "https://your-prod-api.com",   // Production server
+    development: "",                            // Same origin (development server)
+    production: "https://your-api-domain.com",  // Production server
   }
 } as const;
 
@@ -39,14 +37,8 @@ export const ENV_INFO = {
 
 // Quick Setup Functions
 export const quickSetup = {
-  // Use when developing with local Express server (default)
-  useLocalExpress: () => BASE_URL_CONFIGS.PRESETS.localExpress,
-  
-  // Use when connecting to local FastAPI server
-  useLocalFastAPI: () => BASE_URL_CONFIGS.PRESETS.localFastAPI,
-  
-  // Use for staging environment
-  useStaging: () => BASE_URL_CONFIGS.PRESETS.staging,
+  // Use when developing locally (default)
+  useDevelopment: () => BASE_URL_CONFIGS.PRESETS.development,
   
   // Use for production
   useProduction: () => BASE_URL_CONFIGS.PRESETS.production,
