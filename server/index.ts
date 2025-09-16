@@ -15,6 +15,28 @@ if (process.env.NODE_ENV === 'development') {
     pathRewrite: {
       '^/api': '', // Remove /api prefix when forwarding
     },
+    onProxyReq: (proxyReq: any, req: any) => {
+      const originalUrl = req.url;
+      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
+      log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
+    },
+    onProxyRes: (proxyRes: any, req: any) => {
+      const originalUrl = req.url;
+      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
+      log(`✅ PROXY RESPONSE: ${proxyRes.statusCode} from ${targetUrl}`);
+    },
+    onError: (err: any, req: any, res: any) => {
+      const originalUrl = req.url;
+      const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
+      log(`❌ PROXY ERROR: ${err.message} for ${targetUrl}`);
+      if (!res.headersSent) {
+        res.status(502).json({ 
+          error: 'Backend service unavailable', 
+          target: targetUrl,
+          originalUrl: originalUrl 
+        });
+      }
+    },
   }));
 }
 
