@@ -22,6 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import MessageContent from "@/components/MessageContent";
 import type { User as UserType, ChatSession, ChatMessage } from "@shared/schema";
 
 interface Message {
@@ -366,9 +367,12 @@ export default function Chat() {
                       }`}
                     >
                       <CardContent className="p-3">
-                        <p className="text-sm whitespace-pre-wrap" data-testid={`text-message-content-${message.id}`}>
-                          {message.content}
-                        </p>
+                        <div data-testid={`text-message-content-${message.id}`}>
+                          <MessageContent 
+                            content={message.content} 
+                            isUser={message.role === "user"}
+                          />
+                        </div>
                         <p className="text-xs opacity-70 mt-2">
                           {message.timestamp.toLocaleTimeString()}
                         </p>
