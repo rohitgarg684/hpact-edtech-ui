@@ -11,8 +11,7 @@ import {
   Edit2,
   Check,
   X,
-  LogOut,
-  Save
+  LogOut
 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -102,28 +101,6 @@ export default function Chat() {
   });
 
   // Save chat session
-  const saveChatMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "saveChat", undefined, {
-        Authorization: `Bearer ${sessionId}`,
-      });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Chat Saved",
-        description: data.message || "Chat session saved successfully",
-        variant: "default",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Save Error", 
-        description: error.message || "Failed to save chat",
-        variant: "destructive",
-      });
-    },
-  });
 
   // Create new chat session
   const handleNewChat = () => {
@@ -363,16 +340,6 @@ export default function Chat() {
               <h2 className="text-lg font-semibold" data-testid="text-chat-title">
                 {sessions.find(s => s.id === currentSessionId)?.title || "Chat"}
               </h2>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => saveChatMutation.mutate()}
-                disabled={saveChatMutation.isPending || messages.length === 0}
-                data-testid="button-save-chat"
-              >
-                <Save size={16} className="mr-2" />
-                {saveChatMutation.isPending ? "Saving..." : "Save Chat"}
-              </Button>
             </div>
 
             {/* Messages */}

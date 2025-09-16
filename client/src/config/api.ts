@@ -11,7 +11,6 @@ export interface ApiConfig {
     
     // Chat endpoints
     chat: string;
-    saveChat: string;
     
     // Future endpoints can be added here
     // sessions: string;
@@ -31,7 +30,6 @@ const configs: Record<string, ApiConfig> = {
       logout: "/api/logout",
       user: "/api/user",
       chat: "/api/chat",
-      saveChat: "/api/save-chat",
     },
   },
 
@@ -45,7 +43,6 @@ const configs: Record<string, ApiConfig> = {
       logout: "/logout",
       user: "/user", 
       chat: "/chat",
-      saveChat: "/save-chat",
     },
   },
 };

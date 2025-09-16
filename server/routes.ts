@@ -227,38 +227,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Save chat endpoint
-  app.post("/save-chat", async (req, res) => {
-    try {
-      const sessionId = req.headers.authorization?.replace('Bearer ', '');
-      
-      if (!sessionId) {
-        return res.status(401).json({
-          message: "No session provided"
-        });
-      }
-
-      const session = await storage.getSession(sessionId);
-      if (!session) {
-        return res.status(401).json({
-          message: "Invalid session"
-        });
-      }
-
-      // Simulate saving chat (in real implementation, this would save embeddings)
-      res.json({
-        message: "Chat session saved successfully",
-        session_id: sessionId
-      });
-
-    } catch (error) {
-      console.error("Save chat error:", error);
-      res.status(500).json({
-        message: "Internal server error"
-      });
-    }
-  });
-
   const httpServer = createServer(app);
   return httpServer;
 }
