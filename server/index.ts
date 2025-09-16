@@ -3,8 +3,8 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
-// Backend API target URL
-const BACKEND_TARGET_URL = process.env.BACKEND_URL || 'http://localhost:8000';
+// Backend API target URL - Use 0.0.0.0 for Replit compatibility
+const BACKEND_TARGET_URL = process.env.BACKEND_URL || 'http://0.0.0.0:8000';
 
 const app = express();
 app.use(express.json());
