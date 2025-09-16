@@ -1,28 +1,23 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Permissive CORS configuration for local development
-app.use((req, res, next) => {
-  // Allow all origins for local development
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '1728000');
-  
-  // Handle all preflight requests permissively
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-  
-  next();
-});
+// Proxy API requests to external backend
+app.use('/api', createProxyMiddleware({
+  target: 'http://localhost:8000',
+  changeOrigin: true,
+  pathRewrite: {
+    '^/api': '', // Remove /api prefix when forwarding
+  },
+  onProxyReq: (proxyReq: any, req: any) => {
+    log(`Proxying: ${req.method} ${req.url} -> http://localhost:8000${req.path.replace('/api', '')}`);
+  },
+}));
 
 app.use((req, res, next) => {
   const start = Date.now();

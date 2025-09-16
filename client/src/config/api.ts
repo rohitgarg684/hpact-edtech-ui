@@ -35,17 +35,17 @@ const configs: Record<string, ApiConfig> = {
     },
   },
 
-  // Local development with external backend
+  // Local development with proxied backend
   local: {
-    baseUrl: "http://0.0.0.0:8000", // External backend for local dev
+    baseUrl: "", // Same origin via proxy
     timeout: 30000,
     endpoints: {
-      register: "/register",
-      login: "/login", 
-      logout: "/logout",
-      user: "/user",
-      chat: "/chat",
-      saveChat: "/save-chat",
+      register: "/api/register",
+      login: "/api/login", 
+      logout: "/api/logout",
+      user: "/api/user",
+      chat: "/api/chat",
+      saveChat: "/api/save-chat",
     },
   },
 
