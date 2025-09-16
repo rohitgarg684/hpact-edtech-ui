@@ -1,37 +1,22 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Strict CORS configuration for production/cloud
-app.use((req, res, next) => {
-  const allowedOrigins = [
-    'https://your-production-domain.com',
-    'https://your-staging-domain.com',
-    // Add your specific allowed origins here
-  ];
-  
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Max-Age', '86400'); // 24 hours
-  
-  // Handle preflight OPTIONS requests
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-    return;
-  }
-  
-  next();
-});
+// Proxy API requests to external backend in development
+if (process.env.NODE_ENV === 'development') {
+  app.use('/api', createProxyMiddleware({
+    target: 'http://localhost:8000',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/api': '', // Remove /api prefix when forwarding
+    },
+  }));
+}
 
 app.use((req, res, next) => {
   const start = Date.now();

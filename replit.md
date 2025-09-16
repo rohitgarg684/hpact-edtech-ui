@@ -1,6 +1,6 @@
 # Overview
 
-This is a full-stack web application built with React, Express, and PostgreSQL that provides user authentication functionality. The application features a modern user interface built with shadcn/ui components and Tailwind CSS, with a backend API for user registration and login. The project uses TypeScript throughout and implements secure authentication with bcrypt password hashing and session management.
+This is a UI-only frontend application built with React, Express, and TypeScript that connects to external backend APIs for user management and data storage. The application features a modern user interface built with shadcn/ui components and Tailwind CSS, with proxy functionality to communicate with external backend services. The project uses TypeScript throughout and implements centralized API configuration for different deployment environments.
 
 # User Preferences
 
@@ -17,23 +17,16 @@ Preferred communication style: Simple, everyday language.
 - **Form Handling**: React Hook Form with Zod validation
 
 ## Backend Architecture
-- **Framework**: Express.js with TypeScript
-- **Session Management**: Express sessions with PostgreSQL session store
-- **Password Security**: bcrypt for password hashing
-- **Rate Limiting**: Built-in rate limiting for login attempts
-- **API Design**: RESTful API endpoints with comprehensive error handling
+- **Framework**: Express.js with TypeScript serving as UI server and API proxy
+- **API Communication**: Proxy middleware forwards requests to external backend at localhost:8000
+- **Environment Configuration**: Centralized API configuration system with environment-based routing
+- **Development Setup**: Built-in proxy eliminates CORS issues by making same-origin requests
 
-## Database Layer
-- **Database**: PostgreSQL with Neon Database serverless connection
-- **ORM**: Drizzle ORM for type-safe database operations
-- **Schema Management**: Drizzle Kit for migrations and schema management
-- **Storage Interface**: Abstracted storage layer with both memory and database implementations
-
-## Authentication & Security
-- **Password Requirements**: Enforced complex password rules (uppercase, lowercase, digits, special characters)
-- **Session Management**: Server-side sessions with configurable expiration
-- **Rate Limiting**: Protection against brute force attacks on login endpoints
-- **Input Validation**: Comprehensive validation using Zod schemas on both client and server
+## API Integration
+- **Proxy Configuration**: Development environment routes `/api/*` requests to external backend
+- **CORS Solution**: Same-origin requests via proxy eliminate cross-origin restrictions  
+- **Environment Management**: Configurable base URLs for development, production, and local setups
+- **Request Forwarding**: http-proxy-middleware handles seamless API request forwarding
 
 ## Development Tools
 - **Build System**: Vite for fast development and optimized production builds

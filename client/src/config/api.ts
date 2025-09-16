@@ -21,22 +21,8 @@ export interface ApiConfig {
 
 // Environment-specific configurations
 const configs: Record<string, ApiConfig> = {
-  // Development server (same origin)
+  // Development server (proxied to external backend)
   development: {
-    baseUrl: "", // Same origin - no CORS issues
-    timeout: 30000,
-    endpoints: {
-      register: "/register",
-      login: "/login", 
-      logout: "/logout",
-      user: "/user",
-      chat: "/chat",
-      saveChat: "/save-chat",
-    },
-  },
-
-  // Local development with proxied backend
-  local: {
     baseUrl: "", // Same origin via proxy
     timeout: 30000,
     endpoints: {
