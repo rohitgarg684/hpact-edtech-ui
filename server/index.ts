@@ -11,8 +11,9 @@ app.use(express.urlencoded({ extended: false }));
 if (process.env.NODE_ENV === 'development') {
   // Add logging middleware before proxy
   app.use('/api/*', (req, res, next) => {
-    const originalUrl = req.url;
-    const targetUrl = `http://localhost:8000${originalUrl.replace('/api', '')}`;
+    const originalUrl = req.originalUrl || req.url;
+    const rewrittenPath = originalUrl.replace(/^\/api/, '');
+    const targetUrl = `http://localhost:8000${rewrittenPath}`;
     log(`🔄 PROXY REQUEST: ${req.method} ${originalUrl} -> ${targetUrl}`);
     next();
   });
