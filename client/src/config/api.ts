@@ -21,9 +21,23 @@ export interface ApiConfig {
 
 // Environment-specific configurations
 const configs: Record<string, ApiConfig> = {
-  // Development server (local development)
+  // Development server (same origin)
   development: {
     baseUrl: "", // Same origin - no CORS issues
+    timeout: 30000,
+    endpoints: {
+      register: "/register",
+      login: "/login", 
+      logout: "/logout",
+      user: "/user",
+      chat: "/chat",
+      saveChat: "/save-chat",
+    },
+  },
+
+  // Local development with external backend
+  local: {
+    baseUrl: "http://0.0.0.0:8000", // External backend for local dev
     timeout: 30000,
     endpoints: {
       register: "/register",
